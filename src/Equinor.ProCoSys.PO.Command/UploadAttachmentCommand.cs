@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace Equinor.ProCoSys.PO.Command
 {
+    // Todo remove class if not needed during project
     public abstract class UploadAttachmentCommand : IDisposable
     {
         private bool _isDisposed;

@@ -95,7 +95,7 @@ namespace Equinor.ProCoSys.PO.WebApi
             var scopes = Configuration.GetSection("Swagger:Scopes")?.Get<Dictionary<string, string>>() ?? new Dictionary<string, string>();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProCoSys IPO API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "ProCoSys PO API", Version = "v1" });
 
                 //Define the OAuth2.0 scheme that's in use (i.e. Implicit Flow)
                 c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
@@ -157,12 +157,12 @@ namespace Equinor.ProCoSys.PO.WebApi
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "ProCoSys IPO API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "ProCoSys PO API V1");
                 c.DocExpansion(DocExpansion.List);
                 c.DisplayRequestDuration();
 
                 c.OAuthClientId(Configuration["Swagger:ClientId"]);
-                c.OAuthAppName("ProCoSys IPO API V1");
+                c.OAuthAppName("ProCoSys PO API V1");
                 c.OAuthScopeSeparator(" ");
                 c.OAuthAdditionalQueryStringParams(new Dictionary<string, string> { { "resource", Configuration["API:Audience"] } });
             });
