@@ -28,7 +28,7 @@ namespace Equinor.ProCoSys.PO.MainApi.Tests.Responsible
             _mainApiClient = new Mock<IBearerTokenApiClient>();
             _plantCache = new Mock<IPlantCache>();
             _plantCache
-                .Setup(x => x.IsValidPlantForCurrentUserAsync(_plant))
+                .Setup(x => x.HasCurrentUserAccessToPlantAsync(_plant))
                 .Returns(Task.FromResult(true));
             _dut = new MainApiResponsibleService(_mainApiClient.Object, _plantCache.Object, _mainApiOptions.Object);
         }
