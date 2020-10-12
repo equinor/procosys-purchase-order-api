@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Equinor.ProCoSys.PO.WebApi.Authorizations;
 using Equinor.ProCoSys.PO.WebApi.Misc;
 using Microsoft.AspNetCore.Http;
