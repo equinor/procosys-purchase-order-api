@@ -5,6 +5,6 @@ namespace Equinor.ProCoSys.PO.MainApi.Plant
 {
     public interface IPlantApiService
     {
-        Task<List<ProCoSysPlant>> GetPlantsAsync();
+        Task<List<ProCoSysPlant>> GetAllPlantsAsync();
     }
 }
