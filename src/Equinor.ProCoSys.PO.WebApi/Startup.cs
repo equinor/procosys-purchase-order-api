@@ -173,9 +173,9 @@ namespace Equinor.ProCoSys.PO.WebApi
 
             app.UseCurrentPlant();
             app.UseCurrentBearerToken();
-
             app.UseAuthentication();
             app.UseCurrentUser();
+            app.UsePlantValidator();
             app.UseVerifyOidInDb();
             app.UseAuthorization();
 

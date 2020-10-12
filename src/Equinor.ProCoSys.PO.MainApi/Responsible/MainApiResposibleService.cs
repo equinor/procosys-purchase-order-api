@@ -26,7 +26,7 @@ namespace Equinor.ProCoSys.PO.MainApi.Responsible
 
         public async Task<ProCoSysResponsible> TryGetResponsibleAsync(string plant, string code)
         {
-            if (!await _plantCache.IsValidPlantForCurrentUserAsync(plant))
+            if (!await _plantCache.HasCurrentUserAccessToPlantAsync(plant))
             {
                 throw new ArgumentException($"Invalid plant: {plant}");
             }
