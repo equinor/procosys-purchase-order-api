@@ -57,7 +57,7 @@ namespace Equinor.ProCoSys.PO.MainApi.Tests.Permission
         }
 
         [TestMethod]
-        public async Task GetPermissions_ShouldReturnNoPermissions_OnInValidPlant()
+        public async Task GetPermissions_ShouldReturnNoPermissions_OnInvalidPlant()
         {
             // Act
             var result = await _dut.GetPermissionsAsync("INVALIDPLANT");
@@ -67,7 +67,7 @@ namespace Equinor.ProCoSys.PO.MainApi.Tests.Permission
         }
         
         [TestMethod]
-        public async Task GetAllProjectsAsync_ShouldReturnThreeProjects_OnValidPlant()
+        public async Task GetAllProjectsAsync_ShouldReturnTwoProjects_OnValidPlant()
         {
             // Arrange
             _mainApiClient
@@ -95,7 +95,7 @@ namespace Equinor.ProCoSys.PO.MainApi.Tests.Permission
         }
 
         [TestMethod]
-        public async Task GetAllProjectsAsync_ShouldReturnNoProjects_OnInValidPlant()
+        public async Task GetAllProjectsAsync_ShouldReturnNoProjects_OnInvalidPlant()
         {
             // Act
             var result = await _dut.GetAllProjectsAsync("INVALIDPLANT");
@@ -133,7 +133,7 @@ namespace Equinor.ProCoSys.PO.MainApi.Tests.Permission
         }
 
         [TestMethod]
-        public async Task GetContentRestrictions_ShouldReturnNoPermissions_OnInValidPlant()
+        public async Task GetContentRestrictions_ShouldReturnNoPermissions_OnInvalidPlant()
         {
             // Act
             var result = await _dut.GetContentRestrictionsAsync("INVALIDPLANT");
