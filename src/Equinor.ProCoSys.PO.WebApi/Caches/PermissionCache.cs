@@ -61,7 +61,7 @@ namespace Equinor.ProCoSys.PO.WebApi.Caches
         private async Task<IList<ProCoSysProject>> GetAllProjectsForUserAsync(string plantId, Guid userOid)
             => await _cacheManager.GetOrCreate(
                 ProjectsCacheKey(plantId, userOid),
-                async () => await _permissionApiService.GetAllProjectsAsync(plantId),
+                async () => await _permissionApiService.GetAllOpenProjectsAsync(plantId),
                 CacheDuration.Minutes,
                 _options.CurrentValue.PermissionCacheMinutes);
 
