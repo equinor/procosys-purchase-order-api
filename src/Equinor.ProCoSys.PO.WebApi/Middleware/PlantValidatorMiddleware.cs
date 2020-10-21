@@ -18,6 +18,7 @@ namespace Equinor.ProCoSys.PO.WebApi.Middleware
             IPlantCache plantCache,
             ILogger<PlantValidatorMiddleware> logger)
         {
+            logger.LogInformation($"----- {GetType().Name} start");
             var plantId = plantProvider.Plant;
             if (context.User.Identity.IsAuthenticated && plantId != null)
             {
@@ -32,6 +33,7 @@ namespace Equinor.ProCoSys.PO.WebApi.Middleware
                 }
             }
 
+            logger.LogInformation($"----- {GetType().Name} complete");
             // Call the next delegate/middleware in the pipeline
             await _next(context);
         }

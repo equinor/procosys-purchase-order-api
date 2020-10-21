@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Equinor.ProCoSys.PO.WebApi.Misc;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace Equinor.ProCoSys.PO.WebApi.Middleware
 {
@@ -10,8 +11,13 @@ namespace Equinor.ProCoSys.PO.WebApi.Middleware
 
         public CurrentBearerTokenMiddleware(RequestDelegate next) => _next = next;
 
-        public async Task InvokeAsync(HttpContext context, IHttpContextAccessor httpContextAccessor, IBearerTokenSetter bearerTokenSetter)
+        public async Task InvokeAsync(
+            HttpContext context,
+            IHttpContextAccessor httpContextAccessor,
+            IBearerTokenSetter bearerTokenSetter,
+            ILogger<CurrentBearerTokenMiddleware> logger)
         {
+            logger.LogInformation($"----- {GetType().Name} start");
             var authorizationHeader = httpContextAccessor.HttpContext.Request.Headers["Authorization"];
             var tokens = authorizationHeader.ToString()?.Split(' ');
 
@@ -21,6 +27,7 @@ namespace Equinor.ProCoSys.PO.WebApi.Middleware
                 bearerTokenSetter.SetBearerToken(token);
             }
 
+            logger.LogInformation($"----- {GetType().Name} complete");
             // Call the next delegate/middleware in the pipeline
             await _next(context);
         }

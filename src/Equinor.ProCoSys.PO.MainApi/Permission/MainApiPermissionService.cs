@@ -20,11 +20,12 @@ namespace Equinor.ProCoSys.PO.MainApi.Permission
             _baseAddress = new Uri(options.CurrentValue.BaseAddress);
         }
         
-        public async Task<IList<ProCoSysProject>> GetAllProjectsAsync(string plantId)
+        public async Task<IList<ProCoSysProject>> GetAllOpenProjectsAsync(string plantId)
         {
             var url = $"{_baseAddress}Projects" +
                       $"?plantId={plantId}" +
                       "&withCommPkgsOnly=false" +
+                      "&includeProjectsWithoutAccess=true" +
                       $"&api-version={_apiVersion}";
 
             return await _mainApiClient.QueryAndDeserializeAsync<List<ProCoSysProject>>(url) ?? new List<ProCoSysProject>();
