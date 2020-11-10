@@ -2,35 +2,22 @@ FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
 WORKDIR /src
 
 # Copy solution and project files separately and restore NuGet packages to create layers
-COPY *.sln .
 COPY Equinor.ProCoSys.PO.Command/*.csproj ./Equinor.ProCoSys.PO.Command/
-COPY tests/Equinor.ProCoSys.PO.Command.Tests/*.csproj ./tests/Equinor.ProCoSys.PO.Command.Tests/
 COPY Equinor.ProCoSys.PO.Domain/*.csproj ./Equinor.ProCoSys.PO.Domain/
-COPY tests/Equinor.ProCoSys.PO.Domain.Tests/*.csproj ./tests/Equinor.ProCoSys.PO.Domain.Tests/
 COPY Equinor.ProCoSys.PO.Infrastructure/*.csproj ./Equinor.ProCoSys.PO.Infrastructure/
-COPY tests/Equinor.ProCoSys.PO.Infrastructure.Tests/*.csproj ./tests/Equinor.ProCoSys.PO.Infrastructure.Tests/
 COPY Equinor.ProCoSys.PO.MainApi/*.csproj ./Equinor.ProCoSys.PO.MainApi/
-COPY tests/Equinor.ProCoSys.PO.MainApi.Tests/*.csproj ./tests/Equinor.ProCoSys.PO.MainApi.Tests/
 COPY Equinor.ProCoSys.PO.BlobStorage/*.csproj ./Equinor.ProCoSys.PO.BlobStorage/
 COPY Equinor.ProCoSys.PO.Query/*.csproj ./Equinor.ProCoSys.PO.Query/
-COPY tests/Equinor.ProCoSys.PO.Query.Tests/*.csproj ./tests/Equinor.ProCoSys.PO.Query.Tests/
 COPY Equinor.ProCoSys.PO.WebApi/*.csproj ./Equinor.ProCoSys.PO.WebApi/
-COPY tests/Equinor.ProCoSys.PO.WebApi.Tests/*.csproj ./tests/Equinor.ProCoSys.PO.WebApi.Tests/
-COPY tests/Equinor.ProCoSys.PO.Test.Common/*.csproj ./tests/Equinor.ProCoSys.PO.Test.Common/
-
-# Restore NuGet packages
-RUN dotnet restore
 
 # Copy full solution
 COPY . .
 
-# Build
-RUN dotnet build -c Release --no-restore
+# Set workdir where main project is
+WORKDIR "/src/Equinor.ProCoSys.PO.WebApi"
 
-# Test runner target
-FROM build AS testrunner
-WORKDIR /src
-RUN dotnet test -c Release --no-build --no-restore
+# Build
+RUN dotnet build "Equinor.ProCoSys.PO.WebApi.csproj" -c Release
 
 # Publish the application
 FROM build AS publish
@@ -47,15 +34,19 @@ RUN rm -rf /var/lib/apt/lists/*
 
 # Create non-root user. Set ui to 9999 to avoid conflicts with host OS just in case
 RUN adduser --disabled-password --uid 9999 --gecos "" apprunner
+
 # Create the folder and set the non-root as owner
 RUN mkdir /app && chown apprunner.apprunner /app
+
 # Change the user from root to non-root- From now on, all Docker commands are run as non-root user (except for COPY)
 USER apprunner
+
 # Set the port to 5000 since the default production port is 80 and on-root users cannot bind to this port
 ENV ASPNETCORE_URLS http://+:5000
 EXPOSE 5000
 WORKDIR /app
+
 # Copy the published files from the build image into this one
-# COPY defaults to copying files as root, specify the user that should be the owner
+# Copy defaults to copying files as root, specify the user that should be the owner
 COPY --chown=apprunner:apprunner --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Equinor.ProCoSys.PO.WebApi.dll"]

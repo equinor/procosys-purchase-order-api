@@ -17,6 +17,6 @@ namespace Equinor.ProCoSys.PO.WebApi.Misc
             throw new Exception("Unable to determine current user");
         }
 
-        public void SetCurrentUser(Guid oid) => _currentUserOid = oid;
+        public void SetCurrentUserOid(Guid oid) => _currentUserOid = oid;
     }
 }

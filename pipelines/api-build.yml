@@ -25,15 +25,34 @@ variables:
 name: '${{ variables.versionNumber }}$(Build.BuildId)-$(Date:MMddyyyy)'
 
 stages:
-# Common stage. Docker build, tag and push
-- stage: common
-  displayName: 'common'
+# Run tests Stage
+- stage: runtests
+  displayName: 'Run tests'
   variables:
-    envName: 'common'
-    containerRegistry: '${{ variables.containerRegistryName }}'
+    envName: 'runtests'
     envGroupName: '$(globalPrefix)-$(fullAppName)-api-${{ variables.envName }}'
+    testPath: '$(Build.SourcesDirectory)/src/Equinor.Procosys.PO.sln'
+
+  jobs:
+  # Run Test
+  - template: /templates/pipelines/runtest.yml@templates
+    parameters:
+      deploymentName: 'runtests'
+      dependsOn: ''
+      envGroup: '${{ variables.envGroupName }}'
+      testPath: '${{ variables.testPath }}'
+
+# Build stage. Docker build, tag and push
+- stage: build
+  displayName: 'Build'
+  dependsOn: 'runtests'
+  variables:
+    envName: 'build'
+    envRg: '${{ variables.envRgName }}'
+    containerRegistry: '${{ variables.containerRegistryName }}'
+    envGroupName: '$(globalPrefix)-$(fullAppName)-api-${{ variables.env }}'
     dockerRegistryServiceConnection: '${{ variables.dockerRegistryServiceConnectionName }}'
-    dockerfilePath: '$(Build.SourcesDirectory)/src/Equinor.Procosys.PO.WebApi/Dockerfile'
+    dockerfilePath: '$(Build.SourcesDirectory)/src/Equinor.ProCoSys.PO.WebApi/Dockerfile'
 
   jobs:
   # Docker Build
@@ -74,7 +93,7 @@ stages:
 
 # Dev deploy stage
 - stage: dev
-  displayName: 'Dev'
+  displayName: 'Deploy to Dev'
   dependsOn: 'common'
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   variables:
@@ -119,7 +138,7 @@ stages:
 
 # Test deploy stage
 - stage: test
-  displayName: 'Test'
+  displayName: 'Deploy to Test'
   dependsOn: 'common'
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   variables:
@@ -164,7 +183,7 @@ stages:
 
 # Prod deploy stage
 - stage: prod
-  displayName: 'Prod'
+  displayName: 'Deploy to Prod'
   dependsOn: 'common'
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   variables:
